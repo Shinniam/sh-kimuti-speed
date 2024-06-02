@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./uv/uv.bundle.js"></script>
+    <script src="./uv/uv.config.js"></script>
+</head> 
+<body>
+
+    <div class="msg">
+        <div class="lds-dual-ring"></div>
+        <p class="info">
+          さよなら自己責任    
+        </p>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./uv.sw-handler.js', {
+                scope: '/'
+            }).then(() => {
+
+                let url = atob(
+                    decodeURIComponent(window.location.hash.slice(1))
+                );
+
+                if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
+                else if (!(url.startsWith('https://') || url.startsWith('http://'))) {
+                    url = 'http://' + url;   
+                };
+                window.location.href = __uv$config.prefix + __uv$config.encodeUrl(
+                    url
+                );
+            });
+        } else {
+            document.querySelector('.lds-dual-ring').remove();
+            document.querySelector('.info').textContent = 'Your browser appears to be in private browsing mode or is not compatabile. Try swapping or updating your browser.'
+        };
+
+        function isUrl(val = ''){
+            if (/^http(s?):\/\//.test(val) || val.includes('.') && val.substr(0, 1) !== ' ') return true;
+            return false;
+        };
+    </script>
+</body>
+</html>
